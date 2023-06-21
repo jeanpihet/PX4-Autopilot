@@ -107,6 +107,7 @@ if(gazebo_FOUND)
 	set(worlds
 		none
 		baylands
+		dynamic_wind
 		empty
 		ksql_airport
 		mcmillan_airfield
