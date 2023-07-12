@@ -48,13 +48,13 @@
 using namespace math;
 
 template <typename T>
-class AlphaFilter
+class AlphaFilterBase
 {
 public:
-	AlphaFilter() = default;
-	explicit AlphaFilter(float alpha) : _alpha(alpha) {}
+	AlphaFilterBase() = default;
+	explicit AlphaFilterBase(float alpha) : _alpha(alpha) {}
 
-	~AlphaFilter() = default;
+	virtual ~AlphaFilterBase() = default;
 
 	/**
 	 * Set filter parameters for time abstraction
@@ -116,9 +116,40 @@ public:
 	float getCutoffFreq() const { return _cutoff_freq; }
 
 protected:
-	T updateCalculation(const T &sample) { return (1.f - _alpha) * _filter_state + _alpha * sample; }
+	virtual T updateCalculation(const T &sample) = 0;
 
 	float _cutoff_freq{0.f};
 	float _alpha{0.f};
 	T _filter_state{};
+};
+
+template <typename T>
+class AlphaFilter: public AlphaFilterBase<T>
+{
+public:
+	AlphaFilter() = default;
+	explicit AlphaFilter(float alpha) : AlphaFilterBase<T>(alpha) {}
+
+protected:
+	T updateCalculation(const T &sample) { return this->_filter_state + this->_alpha * (sample - this->_filter_state); }
+};
+
+/* Specialization for 3D rotations
+ * The filter is computed on the SO(3) manifold instead of cartesian space
+ * Additions and subtractions are done using the quaternion multiplication and
+ * the error is scaled on the tangent space.
+ */
+template <>
+class AlphaFilter<matrix::Quatf>: public AlphaFilterBase<matrix::Quatf>
+{
+public:
+	AlphaFilter() = default;
+	explicit AlphaFilter(float alpha) : AlphaFilterBase<matrix::Quatf>(alpha) {}
+
+protected:
+	matrix::Quatf updateCalculation(const matrix::Quatf &sample) {
+		matrix::Quatf q_error(_filter_state.inversed() * sample);
+		q_error.canonicalize(); // prevent unwrapping
+		return _filter_state * matrix::Quatf(matrix::AxisAnglef(_alpha * matrix::AxisAnglef(q_error)));
+	}
 };
