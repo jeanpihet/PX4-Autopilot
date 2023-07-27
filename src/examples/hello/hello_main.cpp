@@ -44,6 +44,8 @@
 #include <px4_platform_common/init.h>
 #include <stdio.h>
 
+#include <nasoq/nasoq.h>
+
 int PX4_MAIN(int argc, char **argv)
 {
 	px4::init(argc, argv, "hello");
@@ -51,6 +53,10 @@ int PX4_MAIN(int argc, char **argv)
 	printf("hello\n");
 	HelloExample hello;
 	hello.main();
+
+	/* Nasoq test */
+	auto* qs = new nasoq::QPSettings();
+	printf("Nasoq test: scaling=%d\n", qs->scaling);
 
 	printf("goodbye\n");
 	return 0;

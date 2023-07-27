@@ -40,4 +40,5 @@ px4_add_module(
 		hello_start.cpp
 		hello_example.cpp
 	DEPENDS
+		nasoq
 	)
