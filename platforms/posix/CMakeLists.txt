@@ -51,6 +51,7 @@ if(NOT ANDROID)
 endif()
 
 target_link_libraries(px4 PRIVATE uORB)
+target_link_libraries(px4 PRIVATE nasoq)
 
 if (CMAKE_BUILD_TYPE STREQUAL FuzzTesting)
 	target_include_directories(px4 PRIVATE SYSTEM "${CMAKE_BINARY_DIR}/mavlink}")

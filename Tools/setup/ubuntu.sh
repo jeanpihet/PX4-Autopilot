@@ -78,6 +78,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y --quiet --no-install-recommends i
 	build-essential \
 	cmake \
 	cppcheck \
+	default-jdk \
 	file \
 	g++ \
 	gcc \
@@ -85,6 +86,10 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y --quiet --no-install-recommends i
 	git \
 	lcov \
 	libfuse2 \
+	liblapack3 \
+	liblapacke-dev \
+	libmetis-dev \
+	libopenblas-dev \
 	libxml2-dev \
 	libxml2-utils \
 	make \
